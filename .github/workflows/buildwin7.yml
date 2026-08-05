@@ -1,36 +1,18 @@
-name: Build for Windows 7
+name: Build Windows EXE
 
-on:
-  push:
-    branches: [ main, master ]
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
   build:
     runs-on: windows-2019
-    timeout-minutes: 30  # Μέγιστος χρόνος 30 λεπτά
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup Python 3.8
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.8'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller==5.13.2 flask pandas openpyxl
-    
-    - name: Build executable (με debug)
-      run: |
-        pyinstaller --onefile --noconsole --name e-Diaxeirisi --log-level=DEBUG start_app.py
-    
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
+    - run: pip install pyinstaller==5.13.2 ttkbootstrap pandas openpyxl
+    - run: pyinstaller --onefile --noconsole --name e-Diaxeirisi e-diaxeirisi_master.py
+    - uses: actions/upload-artifact@v4
       with:
         name: e-Diaxeirisi-Windows7
         path: dist/e-Diaxeirisi.exe
-        retention-days: 90
